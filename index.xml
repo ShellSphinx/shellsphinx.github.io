@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ShellSphinx</title>
+    <link>https://shellsphinx.github.io/index.xml</link>
+    <description>Recent content on ShellSphinx</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Chris Stark</copyright>
+    <lastBuildDate>Tue, 21 Feb 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://shellsphinx.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Home Project</title>
+      <link>https://shellsphinx.github.io/2017/02/21/homeproject/</link>
+      <pubDate>Tue, 21 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://shellsphinx.github.io/2017/02/21/homeproject/</guid>
+      <description>&lt;p&gt;One of the great things about working at Robot Entertainment is the ability to work on side projects; here&amp;rsquo;s an in-progress look at mine.  Recently, I&amp;rsquo;ve been working on improving the renderer.  I did all of the code and art in this scene (using Blender and Substance Designer).  I&amp;rsquo;ve had an absolute blast learning while working on this, and am looking forward to seeing what I learn as I continue moving forwards.  Here&amp;rsquo;s a quick rundown of the rendering features shown:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Multithreaded Renderer&lt;/li&gt;
+&lt;li&gt;Physically Based Renderer (using Trowbridge-Reitz (GGX))&lt;/li&gt;
+&lt;li&gt;HDR bloom&lt;/li&gt;
+&lt;li&gt;Dynamic eye adapatation using compute shaders&lt;/li&gt;
+&lt;li&gt;Linear lighting&lt;/li&gt;
+&lt;li&gt;Filmic Tonemapping&lt;/li&gt;
+&lt;li&gt;Dynamic per-pixel point lights&lt;/li&gt;
+&lt;li&gt;Omni (cube-map) shadows&lt;/li&gt;
+&lt;li&gt;Screenspace Ambient Occlusion (SSAO)&lt;/li&gt;
+&lt;li&gt;Screen space deferred decals&lt;/li&gt;
+&lt;li&gt;Parallax-corrected cubemap reflections with pre-filtered roughness mip levels&lt;/li&gt;
+&lt;li&gt;Temporal Supersampling Antialiasing&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://shellsphinx.github.io/images/homeProject.jpg&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>GDC 2017</title>
+      <link>https://shellsphinx.github.io/2017/02/20/gdc2017/</link>
+      <pubDate>Mon, 20 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://shellsphinx.github.io/2017/02/20/gdc2017/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ll be speaking at &lt;a href=&#34;http://schedule.gdconf.com/session/math-for-game-programmers-predictable-projectiles&#34;&gt;GDC 2017&lt;/a&gt; on Monday about the math behind projectiles in Orcs Must Die! I will post the slides some time shortly after GDC.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s the description of the talk I sent in:&lt;/p&gt;
+
+&lt;p&gt;In games, AI must lead the player with a projectile&amp;ndash;simply firing directly at the player won&amp;rsquo;t do.  This talk will explore how to have the AI lead the player for both linear and ballistic projectiles.  We&amp;rsquo;ll walk through the derivation of the equations for projectile motion and the intersection with a moving player so programmers can understand how the math behind the technique works.&lt;/p&gt;
+
+&lt;p&gt;After walking through the basics, additional features that are built on top of the basic math will be discussed, including: avoiding ceilings, what to do when using a ballistic trajectory when the player is too close for a good arc, and what to do when there&amp;rsquo;s no intersection.  Frequently, games will also want the AI to be able to miss convincingly, so we&amp;rsquo;ll discuss ways to handle that.  Finally, we&amp;rsquo;ll want to expose values to designers that they can easily understand and tweak.  All of the additional features discussed will be illustrated by experiences implementing projectiles in the Orcs Must Die! series.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Publications</title>
+      <link>https://shellsphinx.github.io/publications/</link>
+      <pubDate>Sat, 07 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://shellsphinx.github.io/publications/</guid>
+      <description>&lt;p&gt;Coming soon!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

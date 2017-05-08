@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Home Project Update</title>
+        <meta name="description" content="I&rsquo;ve been continuing to work on my home project, and thought I&rsquo;d drop a video of some of the new features I&rsquo;ve gotten in (the video is 1920x1080, view it full screen to see it in all of its glory):
+ Skeletal animation Animation blending Animation notifications Attachments  There are also a few features I&rsquo;ve had for a while but haven&rsquo;t shown, so these are also in the video:">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.18" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="https://shellsphinx.github.io/dist/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-93706436-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="ShellSphinx" href="https://shellsphinx.github.io/">ShellSphinx</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://shellsphinx.github.io/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/shellsphinx">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/shellsphinx">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://www.linkedin.com/in/cstark">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Home" href="/">Home</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Publications" href="/publications/">Publications</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Home Project Update</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2017-05-08" itemprop="datePublished">Mon, May 8, 2017</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="" itemprop="url" rel="author">Chris Stark</a>
+            </span>
+        </span>
+    </p>
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+<video controls width="100%">
+   <source src="/images/demo.mp4"/>
+</video>
+
+<p>I&rsquo;ve been continuing to work on my <a href="http://localhost:1313/2017/02/21/homeproject/">home project</a>, and thought I&rsquo;d drop a video of some of the new features I&rsquo;ve gotten in (the video is 1920x1080, view it full screen to see it in all of its glory):</p>
+
+<ul>
+<li>Skeletal animation</li>
+<li>Animation blending</li>
+<li>Animation notifications</li>
+<li>Attachments</li>
+</ul>
+
+<p>There are also a few features I&rsquo;ve had for a while but haven&rsquo;t shown, so these are also in the video:</p>
+
+<ul>
+<li>Pathing (using Recast)</li>
+<li>Physics (using PhysX)</li>
+<li>Sound (using FMOD)</li>
+<li>UI / Font rendering</li>
+<li>GPU profiling via counters</li>
+<li>Character controller (also using PhysX)</li>
+</ul>
+
+<h1 id="frame-breakdown">Frame breakdown</h1>
+
+<p>I always love seeing frame breakdowns, so thought I&rsquo;d do one for my engine.  Note that I&rsquo;ve gamma-corrected most of the screenshots so that they&rsquo;re not too dark to see.</p>
+
+<p>Here&rsquo;s the final output to start:
+<img src="/images/final.png" alt="Screenshot" /></p>
+
+<p>Here&rsquo;s a screenshot of the level being built in the editor (including the generated navmesh).  The editor was written in wxWidgets and links the engine as a static library:
+<img src="/images/Editor_NavMesh.png" alt="Screenshot" /></p>
+
+<h2 id="shadow-cubemaps">Shadow cubemaps</h2>
+
+<p>The first thing that happens is a depth-only pass is made into a cube map for any visible shadow-casting point lights.  I use a geometry shader to do one draw call for all 6 faces, which winds up being faster (for me) than drawing the geo for each face directly.  I&rsquo;m using standard shadow mapping for now.  Here&rsquo;s the bottom face of the light right above the character:
+<img src="/images/shadow_buffer.png" alt="Screenshot" /></p>
+
+<h2 id="gbuffer">GBuffer</h2>
+
+<p>Next up is the GBuffer pass.  It&rsquo;s all done in one draw call into 3 render targets (plus depth buffer).  First is the albedo target:
+<img src="/images/gbuffer_albedo.png" alt="Screenshot" />
+The gbuffer renders the metallic value into the alpha channel of the albedo render target:
+<img src="/images/gbuffer_metallic.png" alt="Screenshot" />
+It also renders the view-space normal into a 16-bit floating point render target:
+<img src="/images/gbuffer_normal.png" alt="Screenshot" />
+And renders the roughness value into the normal render target&rsquo;s alpha channel:
+<img src="/images/gbuffer_roughness.png" alt="Screenshot" />
+Finally, it renders the reflection values into the final render target.  It uses an parallax corrected importance-sampled cubemap with pre-filtered roughness mip levels that is built in the editor, and then has a fallback cubemap that it uses if it can&rsquo;t find a value in the importance-sampled cubemap.  You can see the roughness values coming into play in the reflections on the floor.
+<img src="/images/gbuffer_reflection.png" alt="Screenshot" />
+And here&rsquo;s what the depth buffer looks like for the scene:
+<img src="/images/depth_buffer.png" alt="Screenshot" /></p>
+
+<h2 id="screen-space-decals">Screen Space Decals</h2>
+
+<p>After the GBuffer pass, screenspace decals are composited in.  In the case of this decal, it only has an albedo component, so it doesn&rsquo;t modify the other buffers:
+<img src="/images/gbuffer_decals.png" alt="Screenshot" /></p>
+
+<h2 id="ssao">SSAO</h2>
+
+<p>After the GBuffer pass, I do an SSAO pass to add ambient occlusion:
+<img src="/images/ssao.png" alt="Screenshot" /></p>
+
+<h2 id="lighting">Lighting</h2>
+
+<p>Next up is the lighting pass.  I&rsquo;m using a PBR light model based on <a href="https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf">Brian Karis&rsquo; 2013 Siggraph presentation</a>.  This is what the individual light contributions look like when they&rsquo;re all added up:
+<img src="/images/light_only.png" alt="Screenshot" /></p>
+
+<h2 id="motion-blur">Motion Blur</h2>
+
+<p>After lighting, I apply motion blur to the scene via the motion blur buffer, which stores changes in screen space position since the last frame (red is motion in x, green is motion in y).  As you can see here, only the character was moving on this frame.
+<img src="/images/motionblur_buffer.png" alt="Screenshot" /></p>
+
+<p>Here&rsquo;s what the scene looks like after motion blur was applied:
+<img src="/images/motionblur_after.png" alt="Screenshot" /></p>
+
+<h2 id="eye-adaptation">Eye Adaptation</h2>
+
+<p>I also do eye adaptation based on the scene brightness.  First, I downscale the scene to 128x64 and take the brightness of each pixel in the output target (all images in this section are scaled up to make it easier to visualize what&rsquo;s happening).
+<img src="/images/autoadapt_1.png" alt="Screenshot" />
+I then do a bitonic sort in the compute shader, which gives me this result:
+<img src="/images/autoadapt_2.png" alt="Screenshot" /></p>
+
+<p>I then take the pixel corresponding to the brightness level I want to use (I take the median value), and put it into the history buffer, which does a calculation based on the last 16 frames and gives a single brightness result that I use in the bloom pass.  In this case, the history buffer is constant since I had been standing still to capture this frame:
+<img src="/images/lumhistory.png" alt="Screenshot" /></p>
+
+<h2 id="bloom">Bloom</h2>
+
+<p>Once I have the brightness from the eye adaptation pass, I use that value to pull out only the pixels in the scene that are above that threshold:
+<img src="/images/hdr_1.png" alt="Screenshot" />
+I then scale it down (some scale steps are skipped here):
+<img src="/images/hdr_2.png" alt="Screenshot" />
+<img src="/images/hdr_3.png" alt="Screenshot" />
+I then blur it horizontally and vertically with a separable gaussian blur:
+<img src="/images/hdr_4.png" alt="Screenshot" />
+<img src="/images/hdr_6.png" alt="Screenshot" />
+Then upscale it using bilinear sampling back to the size of the render target:
+<img src="/images/hdr_5.png" alt="Screenshot" />
+I finally add the upscaled texture back to the original scene, resulting in this:
+<img src="/images/hdr_addin.png" alt="Screenshot" /></p>
+
+<h2 id="tonemap">Tonemap</h2>
+
+<p>Since the pictures are already gamma corrected, there&rsquo;s not much point in showing a picture from the tonemap pass.  I&rsquo;m using the well-known filmic tonemapping curve from Uncharted 2.</p>
+
+<h2 id="ui-gpu-profiling">UI/GPU Profiling</h2>
+
+<p>Finally, I draw the UI on top of the scene, which includes GPU profiling data using counters.
+<img src="/images/final.png" alt="Screenshot" /></p>
+
+<h2 id="assets">Assets</h2>
+
+<p>Here&rsquo;s a quick list of where all of the assets used in the scene came from:</p>
+
+<ul>
+<li>I built all of the environment models in Blender and textured them in Substance Designer.</li>
+<li>Character model and animations are from <a href="https://www.mixamo.com">https://www.mixamo.com</a></li>
+<li>Weapon model is from <a href="https://www.chamferzone.com">https://www.chamferzone.com</a></li>
+<li>Footstep sounds are from <a href="http://www.sonniss.com">http://www.sonniss.com</a></li>
+<li>UI background is from <a href="https://www.kenney.nl/assets/ui-pack">https://www.kenney.nl/assets/ui-pack</a></li>
+<li>Using the Roboto font from <a href="https://fonts.google.com/specimen/Roboto">https://fonts.google.com/specimen/Roboto</a></li>
+</ul>
+
+<h1 id="references">References</h1>
+
+<p>Here are a selection of references I used when developing the renderer.  Thanks for reading!</p>
+
+<h4 id="general">General</h4>
+
+<p><a href="http://advances.realtimerendering.com/destiny/gdc_2015/">Destiny&rsquo;s Multi-threaded Renderer Architecture</a><br/></p>
+
+<h4 id="gbuffer-1">GBuffer</h4>
+
+<p><a href="http://advances.realtimerendering.com/s2013/Tatarchuk-Destiny-SIGGRAPH2013.pdf">Destiny: From Mythic Science Fiction to Rendering in Real-Time</a><br/>
+<a href="https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf">Real Shading in Unreal Engine 4</a><br/>
+<a href="http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr_v2.pdf">Moving Frostbite to Physically Based Rendering 2.0</a><br/></p>
+
+<h4 id="screen-space-decals-1">Screen Space Decals</h4>
+
+<p><a href="http://www.slideshare.net/blindrenderer/screen-space-decals-in-warhammer-40000-space-marine-14699854">Screen Space Decals in Warhammer 40,000: Space Marine</a><br/></p>
+
+<h4 id="ssao-1">SSAO</h4>
+
+<p><a href="https://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html?m=1">SSAO Tutorial</a><br/>
+<a href="http://alextardif.com/SSAO.html">SSAO</a><br/>
+<a href="http://blazelight.net/en/articles/ssao-tutorial-english.php">SSAO Shader Tutorial</a><br/></p>
+
+<h4 id="lighting-1">Lighting</h4>
+
+<p><a href="https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf">Real Shading in Unreal Engine 4</a><br/>
+<a href="http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr_v2.pdf">Moving Frostbite to Physically Based Rendering 2.0</a><br/></p>
+
+<h4 id="eye-adaptation-1">Eye Adaptation</h4>
+
+<p><a href="https://knarkowicz.wordpress.com/2016/01/09/automatic-exposure/">Automatic Exposure</a><br/>
+<a href="http://download.microsoft.com/download/7/6/0/760ba04e-6952-4c14-a51e-fa54e02f3198/Graphics.zip">HDR The Bungie Way</a><br/>
+<a href="http://www.cs.kent.edu/~batcher/sort.pdf">Sorting Networks and Their Applications</a><br/>
+<a href="https://www.cs.rutgers.edu/~venugopa/parallel_summer2012/bitonic_overview.html">Bitonic sort overview</a><br/>
+<a href="http://www.cse.buffalo.edu/faculty/miller/Courses/CSE633/Mullapudi-Spring-2014-CSE633.pdf">Bitonic Sort</a><br/>
+<a href="https://code.msdn.microsoft.com/windowsdesktop/DirectCompute-Basic-Win32-7d5a7408">DirectCompute bitonic sort sample</a><br/></p>
+
+<h4 id="bloom-1">Bloom</h4>
+
+<p><a href="http://www.daionet.gr.jp/~masa/archives/GDC2004/GDC2004_PIoHDRR_SHORT_EN.ppt">Practical Implementation of High Dynamic Range Rendering</a><br/></p>
+
+<h4 id="motion-blur-1">Motion Blur</h4>
+
+<p><a href="https://mynameismjp.wordpress.com/the-museum/samples-tutorials-tools/motion-blur-sample/">Motion Blur Sample</a><br/>
+<a href="https://john-chapman-graphics.blogspot.co.uk/2013/01/per-object-motion-blur.html">Per-Object Motion Blur</a><br/></p>
+
+<h4 id="tonemapping">Tonemapping</h4>
+
+<p><a href="http://www.gdcvault.com/play/1012459/Uncharted_2__HDR_Lighting">Uncharted 2: HDR Lighting</a><br/>
+<a href="http://filmicworlds.com/blog/filmic-tonemapping-operators/">Filmic Tonemapping Operators</a><br/></p>
+
+<h4 id="gpu-profiling">GPU Profiling</h4>
+
+<p><a href="http://www.reedbeta.com/blog/gpu-profiling-101/">GPU Profiling 101</a><br/></p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Home%20Project%20Update&url=https%3a%2f%2fshellsphinx.github.io%2f2017%2f05%2f08%2fhomeproject2%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fshellsphinx.github.io%2f2017%2f05%2f08%2fhomeproject2%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2fshellsphinx.github.io%2f2017%2f05%2f08%2fhomeproject2%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="ShellSphinx" href="https://shellsphinx.github.io/">ShellSphinx</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2017 Chris Stark / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://shellsphinx.github.io/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://shellsphinx.github.io/js/jquery.fitvids.js"></script>
+        <script src="https://shellsphinx.github.io/js/scripts.js"></script>
+    </body>
+</html>
+

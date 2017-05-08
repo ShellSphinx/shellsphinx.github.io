@@ -7,8 +7,198 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Chris Stark</copyright>
-    <lastBuildDate>Mon, 06 Mar 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 08 May 2017 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://shellsphinx.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Home Project Update</title>
+      <link>https://shellsphinx.github.io/2017/05/08/homeproject2/</link>
+      <pubDate>Mon, 08 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://shellsphinx.github.io/2017/05/08/homeproject2/</guid>
+      <description>
+
+&lt;video controls width=&#34;100%&#34;&gt;
+   &lt;source src=&#34;https://shellsphinx.github.io/images/demo.mp4&#34;/&gt;
+&lt;/video&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been continuing to work on my &lt;a href=&#34;http://localhost:1313/2017/02/21/homeproject/&#34;&gt;home project&lt;/a&gt;, and thought I&amp;rsquo;d drop a video of some of the new features I&amp;rsquo;ve gotten in (the video is 1920x1080, view it full screen to see it in all of its glory):&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Skeletal animation&lt;/li&gt;
+&lt;li&gt;Animation blending&lt;/li&gt;
+&lt;li&gt;Animation notifications&lt;/li&gt;
+&lt;li&gt;Attachments&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There are also a few features I&amp;rsquo;ve had for a while but haven&amp;rsquo;t shown, so these are also in the video:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Pathing (using Recast)&lt;/li&gt;
+&lt;li&gt;Physics (using PhysX)&lt;/li&gt;
+&lt;li&gt;Sound (using FMOD)&lt;/li&gt;
+&lt;li&gt;UI / Font rendering&lt;/li&gt;
+&lt;li&gt;GPU profiling via counters&lt;/li&gt;
+&lt;li&gt;Character controller (also using PhysX)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;frame-breakdown&#34;&gt;Frame breakdown&lt;/h1&gt;
+
+&lt;p&gt;I always love seeing frame breakdowns, so thought I&amp;rsquo;d do one for my engine.  Note that I&amp;rsquo;ve gamma-corrected most of the screenshots so that they&amp;rsquo;re not too dark to see.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s the final output to start:
+&lt;img src=&#34;https://shellsphinx.github.io/images/final.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a screenshot of the level being built in the editor (including the generated navmesh).  The editor was written in wxWidgets and links the engine as a static library:
+&lt;img src=&#34;https://shellsphinx.github.io/images/Editor_NavMesh.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;shadow-cubemaps&#34;&gt;Shadow cubemaps&lt;/h2&gt;
+
+&lt;p&gt;The first thing that happens is a depth-only pass is made into a cube map for any visible shadow-casting point lights.  I use a geometry shader to do one draw call for all 6 faces, which winds up being faster (for me) than drawing the geo for each face directly.  I&amp;rsquo;m using standard shadow mapping for now.  Here&amp;rsquo;s the bottom face of the light right above the character:
+&lt;img src=&#34;https://shellsphinx.github.io/images/shadow_buffer.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;gbuffer&#34;&gt;GBuffer&lt;/h2&gt;
+
+&lt;p&gt;Next up is the GBuffer pass.  It&amp;rsquo;s all done in one draw call into 3 render targets (plus depth buffer).  First is the albedo target:
+&lt;img src=&#34;https://shellsphinx.github.io/images/gbuffer_albedo.png&#34; alt=&#34;Screenshot&#34; /&gt;
+The gbuffer renders the metallic value into the alpha channel of the albedo render target:
+&lt;img src=&#34;https://shellsphinx.github.io/images/gbuffer_metallic.png&#34; alt=&#34;Screenshot&#34; /&gt;
+It also renders the view-space normal into a 16-bit floating point render target:
+&lt;img src=&#34;https://shellsphinx.github.io/images/gbuffer_normal.png&#34; alt=&#34;Screenshot&#34; /&gt;
+And renders the roughness value into the normal render target&amp;rsquo;s alpha channel:
+&lt;img src=&#34;https://shellsphinx.github.io/images/gbuffer_roughness.png&#34; alt=&#34;Screenshot&#34; /&gt;
+Finally, it renders the reflection values into the final render target.  It uses an parallax corrected importance-sampled cubemap with pre-filtered roughness mip levels that is built in the editor, and then has a fallback cubemap that it uses if it can&amp;rsquo;t find a value in the importance-sampled cubemap.  You can see the roughness values coming into play in the reflections on the floor.
+&lt;img src=&#34;https://shellsphinx.github.io/images/gbuffer_reflection.png&#34; alt=&#34;Screenshot&#34; /&gt;
+And here&amp;rsquo;s what the depth buffer looks like for the scene:
+&lt;img src=&#34;https://shellsphinx.github.io/images/depth_buffer.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;screen-space-decals&#34;&gt;Screen Space Decals&lt;/h2&gt;
+
+&lt;p&gt;After the GBuffer pass, screenspace decals are composited in.  In the case of this decal, it only has an albedo component, so it doesn&amp;rsquo;t modify the other buffers:
+&lt;img src=&#34;https://shellsphinx.github.io/images/gbuffer_decals.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;ssao&#34;&gt;SSAO&lt;/h2&gt;
+
+&lt;p&gt;After the GBuffer pass, I do an SSAO pass to add ambient occlusion:
+&lt;img src=&#34;https://shellsphinx.github.io/images/ssao.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;lighting&#34;&gt;Lighting&lt;/h2&gt;
+
+&lt;p&gt;Next up is the lighting pass.  I&amp;rsquo;m using a PBR light model based on &lt;a href=&#34;https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf&#34;&gt;Brian Karis&amp;rsquo; 2013 Siggraph presentation&lt;/a&gt;.  This is what the individual light contributions look like when they&amp;rsquo;re all added up:
+&lt;img src=&#34;https://shellsphinx.github.io/images/light_only.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;motion-blur&#34;&gt;Motion Blur&lt;/h2&gt;
+
+&lt;p&gt;After lighting, I apply motion blur to the scene via the motion blur buffer, which stores changes in screen space position since the last frame (red is motion in x, green is motion in y).  As you can see here, only the character was moving on this frame.
+&lt;img src=&#34;https://shellsphinx.github.io/images/motionblur_buffer.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s what the scene looks like after motion blur was applied:
+&lt;img src=&#34;https://shellsphinx.github.io/images/motionblur_after.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;eye-adaptation&#34;&gt;Eye Adaptation&lt;/h2&gt;
+
+&lt;p&gt;I also do eye adaptation based on the scene brightness.  First, I downscale the scene to 128x64 and take the brightness of each pixel in the output target (all images in this section are scaled up to make it easier to visualize what&amp;rsquo;s happening).
+&lt;img src=&#34;https://shellsphinx.github.io/images/autoadapt_1.png&#34; alt=&#34;Screenshot&#34; /&gt;
+I then do a bitonic sort in the compute shader, which gives me this result:
+&lt;img src=&#34;https://shellsphinx.github.io/images/autoadapt_2.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I then take the pixel corresponding to the brightness level I want to use (I take the median value), and put it into the history buffer, which does a calculation based on the last 16 frames and gives a single brightness result that I use in the bloom pass.  In this case, the history buffer is constant since I had been standing still to capture this frame:
+&lt;img src=&#34;https://shellsphinx.github.io/images/lumhistory.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;bloom&#34;&gt;Bloom&lt;/h2&gt;
+
+&lt;p&gt;Once I have the brightness from the eye adaptation pass, I use that value to pull out only the pixels in the scene that are above that threshold:
+&lt;img src=&#34;https://shellsphinx.github.io/images/hdr_1.png&#34; alt=&#34;Screenshot&#34; /&gt;
+I then scale it down (some scale steps are skipped here):
+&lt;img src=&#34;https://shellsphinx.github.io/images/hdr_2.png&#34; alt=&#34;Screenshot&#34; /&gt;
+&lt;img src=&#34;https://shellsphinx.github.io/images/hdr_3.png&#34; alt=&#34;Screenshot&#34; /&gt;
+I then blur it horizontally and vertically with a separable gaussian blur:
+&lt;img src=&#34;https://shellsphinx.github.io/images/hdr_4.png&#34; alt=&#34;Screenshot&#34; /&gt;
+&lt;img src=&#34;https://shellsphinx.github.io/images/hdr_6.png&#34; alt=&#34;Screenshot&#34; /&gt;
+Then upscale it using bilinear sampling back to the size of the render target:
+&lt;img src=&#34;https://shellsphinx.github.io/images/hdr_5.png&#34; alt=&#34;Screenshot&#34; /&gt;
+I finally add the upscaled texture back to the original scene, resulting in this:
+&lt;img src=&#34;https://shellsphinx.github.io/images/hdr_addin.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;tonemap&#34;&gt;Tonemap&lt;/h2&gt;
+
+&lt;p&gt;Since the pictures are already gamma corrected, there&amp;rsquo;s not much point in showing a picture from the tonemap pass.  I&amp;rsquo;m using the well-known filmic tonemapping curve from Uncharted 2.&lt;/p&gt;
+
+&lt;h2 id=&#34;ui-gpu-profiling&#34;&gt;UI/GPU Profiling&lt;/h2&gt;
+
+&lt;p&gt;Finally, I draw the UI on top of the scene, which includes GPU profiling data using counters.
+&lt;img src=&#34;https://shellsphinx.github.io/images/final.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;assets&#34;&gt;Assets&lt;/h2&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a quick list of where all of the assets used in the scene came from:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I built all of the environment models in Blender and textured them in Substance Designer.&lt;/li&gt;
+&lt;li&gt;Character model and animations are from &lt;a href=&#34;https://www.mixamo.com&#34;&gt;https://www.mixamo.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Weapon model is from &lt;a href=&#34;https://www.chamferzone.com&#34;&gt;https://www.chamferzone.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Footstep sounds are from &lt;a href=&#34;http://www.sonniss.com&#34;&gt;http://www.sonniss.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;UI background is from &lt;a href=&#34;https://www.kenney.nl/assets/ui-pack&#34;&gt;https://www.kenney.nl/assets/ui-pack&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Using the Roboto font from &lt;a href=&#34;https://fonts.google.com/specimen/Roboto&#34;&gt;https://fonts.google.com/specimen/Roboto&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&#34;references&#34;&gt;References&lt;/h1&gt;
+
+&lt;p&gt;Here are a selection of references I used when developing the renderer.  Thanks for reading!&lt;/p&gt;
+
+&lt;h4 id=&#34;general&#34;&gt;General&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://advances.realtimerendering.com/destiny/gdc_2015/&#34;&gt;Destiny&amp;rsquo;s Multi-threaded Renderer Architecture&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;gbuffer-1&#34;&gt;GBuffer&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://advances.realtimerendering.com/s2013/Tatarchuk-Destiny-SIGGRAPH2013.pdf&#34;&gt;Destiny: From Mythic Science Fiction to Rendering in Real-Time&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf&#34;&gt;Real Shading in Unreal Engine 4&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr_v2.pdf&#34;&gt;Moving Frostbite to Physically Based Rendering 2.0&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;screen-space-decals-1&#34;&gt;Screen Space Decals&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.slideshare.net/blindrenderer/screen-space-decals-in-warhammer-40000-space-marine-14699854&#34;&gt;Screen Space Decals in Warhammer 40,000: Space Marine&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;ssao-1&#34;&gt;SSAO&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html?m=1&#34;&gt;SSAO Tutorial&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;http://alextardif.com/SSAO.html&#34;&gt;SSAO&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;http://blazelight.net/en/articles/ssao-tutorial-english.php&#34;&gt;SSAO Shader Tutorial&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;lighting-1&#34;&gt;Lighting&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf&#34;&gt;Real Shading in Unreal Engine 4&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr_v2.pdf&#34;&gt;Moving Frostbite to Physically Based Rendering 2.0&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;eye-adaptation-1&#34;&gt;Eye Adaptation&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://knarkowicz.wordpress.com/2016/01/09/automatic-exposure/&#34;&gt;Automatic Exposure&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;http://download.microsoft.com/download/7/6/0/760ba04e-6952-4c14-a51e-fa54e02f3198/Graphics.zip&#34;&gt;HDR The Bungie Way&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;http://www.cs.kent.edu/~batcher/sort.pdf&#34;&gt;Sorting Networks and Their Applications&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;https://www.cs.rutgers.edu/~venugopa/parallel_summer2012/bitonic_overview.html&#34;&gt;Bitonic sort overview&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;http://www.cse.buffalo.edu/faculty/miller/Courses/CSE633/Mullapudi-Spring-2014-CSE633.pdf&#34;&gt;Bitonic Sort&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;https://code.msdn.microsoft.com/windowsdesktop/DirectCompute-Basic-Win32-7d5a7408&#34;&gt;DirectCompute bitonic sort sample&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;bloom-1&#34;&gt;Bloom&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.daionet.gr.jp/~masa/archives/GDC2004/GDC2004_PIoHDRR_SHORT_EN.ppt&#34;&gt;Practical Implementation of High Dynamic Range Rendering&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;motion-blur-1&#34;&gt;Motion Blur&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://mynameismjp.wordpress.com/the-museum/samples-tutorials-tools/motion-blur-sample/&#34;&gt;Motion Blur Sample&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;https://john-chapman-graphics.blogspot.co.uk/2013/01/per-object-motion-blur.html&#34;&gt;Per-Object Motion Blur&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;tonemapping&#34;&gt;Tonemapping&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.gdcvault.com/play/1012459/Uncharted_2__HDR_Lighting&#34;&gt;Uncharted 2: HDR Lighting&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&#34;http://filmicworlds.com/blog/filmic-tonemapping-operators/&#34;&gt;Filmic Tonemapping Operators&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;gpu-profiling&#34;&gt;GPU Profiling&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.reedbeta.com/blog/gpu-profiling-101/&#34;&gt;GPU Profiling 101&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Publications</title>

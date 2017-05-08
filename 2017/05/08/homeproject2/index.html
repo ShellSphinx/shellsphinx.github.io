@@ -70,6 +70,10 @@ ga('send', 'pageview');
         <a title="Publications" href="/publications/">Publications</a>
     </li>
 
+    <li class="site-nav-item">
+        <a title="Résumé" href="/images/resume2017.pdf">Résumé</a>
+    </li>
+
                     </ul>
                 </div>
             </header>
@@ -154,7 +158,7 @@ And here&rsquo;s what the depth buffer looks like for the scene:
 
 <h2 id="screen-space-decals">Screen Space Decals</h2>
 
-<p>After the GBuffer pass, screenspace decals are composited in.  In the case of this decal, it only has an albedo component, so it doesn&rsquo;t modify the other buffers:
+<p>After the GBuffer pass, screenspace decals are composited in.  In the case of this decal, it only has an albedo component, so it doesn&rsquo;t modify the other buffers.  I&rsquo;ve added red arrows to show where the decals are, as they blend in rather well otherwise.
 <img src="/images/gbuffer_decals.png" alt="Screenshot" /></p>
 
 <h2 id="ssao">SSAO</h2>

@@ -74,7 +74,7 @@ And here&amp;rsquo;s what the depth buffer looks like for the scene:
 
 &lt;h2 id=&#34;screen-space-decals&#34;&gt;Screen Space Decals&lt;/h2&gt;
 
-&lt;p&gt;After the GBuffer pass, screenspace decals are composited in.  In the case of this decal, it only has an albedo component, so it doesn&amp;rsquo;t modify the other buffers:
+&lt;p&gt;After the GBuffer pass, screenspace decals are composited in.  In the case of this decal, it only has an albedo component, so it doesn&amp;rsquo;t modify the other buffers.  I&amp;rsquo;ve added red arrows to show where the decals are, as they blend in rather well otherwise.
 &lt;img src=&#34;https://shellsphinx.github.io/images/gbuffer_decals.png&#34; alt=&#34;Screenshot&#34; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;ssao&#34;&gt;SSAO&lt;/h2&gt;
